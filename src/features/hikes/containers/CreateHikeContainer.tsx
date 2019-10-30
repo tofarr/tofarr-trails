@@ -2,13 +2,11 @@ import React, { FC, FormEvent, useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
-import useErr from '../../../hooks/useErr';
-import useWorking from '../../../hooks/useWorking';
-
 import IHike from '../IHike';
 import ITag from '../../tags/ITag';
-import { newInstance, create } from '../HikeService';
-import { list } from '../../tags/TagService';
+import { newHike, createHike } from '../HikeService';
+import { listTags } from '../../tags/TagService';
+import { createHikeTag } from '../../hikeTags/HikeTagService';
 import HikeForm from '../components/HikeForm';
 
 export interface IHikeFormProps {
@@ -20,43 +18,28 @@ const CreateHike: FC<IHikeFormProps> = ({ afterCreateHike }) => {
   const [hike, setHike] = useState<IHike | undefined>(undefined);
   const [selectableTags, setSelectableTags] = useState<ITag[]|undefined>(undefined);
   const [selectedTags, setSelectedTags] = useState<ITag[]>([]);
-  const { err } = useErr();
-  const { incrementWorking, decrementWorking } = useWorking();
 
   useEffect(() => {
-    incrementWorking();
-    newInstance().then((hike: IHike) => {
-      decrementWorking();
-      setHike(hike);
-    }, (e: any) => {
-      decrementWorking()
-      err(e);
-    });
-  }, [err, incrementWorking, decrementWorking]);
+    newHike().then(setHike);
+  }, []);
 
   function handleCreateHike(event: FormEvent){
     event.preventDefault();
-    incrementWorking();
-    create(hike as IHike).then((newHike) => {
-      setHike(newHike);
-      if(afterCreateHike){
-        afterCreateHike(newHike);
-      }
-    }, (e) => {
-      decrementWorking()
-      err(e);
-    })
+    createHike(hike as IHike).then((createdHike) => {
+      Promise.all(selectedTags.map(tag => createHikeTag(createdHike.id as number, tag.id as number))).then(() => {
+        newHike().then((_hike: IHike) => {
+          setHike(_hike);
+          setSelectedTags([]);
+          if(afterCreateHike){
+            afterCreateHike(createdHike);
+          }
+        });
+      });
+    });
   }
 
   function handleSearch(){
-    incrementWorking();
-    list().then((tags: ITag[]) => {
-      decrementWorking();
-      setSelectableTags(tags);
-    }, (e: any) => {
-      decrementWorking()
-      err(e);
-    })
+    listTags().then(setSelectableTags);
   }
 
   function handleAddHikeTag(tag: ITag){

@@ -1,10 +1,9 @@
 import React, { FC, Fragment, useEffect, useState } from 'react';
 import { findIndex } from 'lodash';
 
-import useErr from '../../../hooks/useErr';
-import useWorking from '../../../hooks/useWorking';
+import { addMsg } from '../../../services/MsgService';
 
-import { destroy, list, update } from '../TagService';
+import { destroyTag, listTags, updateTag } from '../TagService';
 import ITag from '../ITag';
 import CreateTagContainer from '../containers/CreateTagContainer';
 import TagList from '../components/TagList';
@@ -12,55 +11,31 @@ import TagList from '../components/TagList';
 const TagsContainer: FC = () => {
 
   const [tags, setTags] = useState<ITag[]>([]);
-  const { err } = useErr();
-  const { incrementWorking, decrementWorking } = useWorking();
 
   useEffect(() => {
-    incrementWorking();
-    list().then((tags: ITag[]) => {
-      decrementWorking();
-      setTags(tags);
-    }, (e: any) => {
-      decrementWorking();
-      err(e);
-    });
-  }, [err, decrementWorking, incrementWorking]);
+    listTags().then(setTags);
+  }, []);
 
   function handleUpdateTag(tag: ITag){
-    incrementWorking();
-    update(tag).then(() => {
-      decrementWorking();
+    updateTag(tag).then(() => {
       const newTags = tags.slice();
       newTags[findIndex(tags, { id: tag.id })] = tag;
       setTags(newTags);
-    }, (e: any) => {
-      decrementWorking();
-      err(e);
     });
   }
 
   function handleDeleteTag(tag: ITag){
-    incrementWorking();
-    destroy(tag.id as number).then(() => {
-      decrementWorking();
+    destroyTag(tag.id as number).then(() => {
       const newTags = tags.slice();
       newTags.splice(findIndex(tags, { id: tag.id }), 1);
       setTags(newTags);
-    }, (e: any) => {
-      decrementWorking();
-      err(e);
+      addMsg('Tag Deleted');
     });
   }
 
   function handleAfterCreateTag(){
-    incrementWorking();
-    list().then((tags: ITag[]) => {
-      decrementWorking();
-      setTags(tags);
-    }, (e: any) => {
-      decrementWorking();
-      err(e);
-    });
+    listTags().then(setTags);
+    addMsg('Tag Created');
   }
 
   return <Fragment>

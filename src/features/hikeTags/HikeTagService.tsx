@@ -1,4 +1,5 @@
 import DbService from '../../services/DbService';
+import { monitor } from '../../services/TaskService';
 
 import IHikeTag from './IHikeTag';
 
@@ -10,8 +11,8 @@ function table(){
   return DbService.table<IHikeTag>('hikes_tags');
 }
 
-export function create(hike_id: number, tag_id: number) {
-  return new Promise((resolve, reject) => {
+export function createHikeTag(hike_id: number, tag_id: number) {
+  return monitor('CREATE_HIKE_TAG', new Promise((resolve, reject) => {
     const hikes_tags = table();
     const hikes = DbService.table('hikes');
     DbService.transaction('rw', hikes_tags, hikes, () => {
@@ -26,11 +27,11 @@ export function create(hike_id: number, tag_id: number) {
         }, reject);
       }, reject);
     });
-  });
+  }));
 }
 
-export function destroy(hike_id: number, tag_id: number) {
-  return new Promise((resolve, reject) => {
+export function destroyHikeTag(hike_id: number, tag_id: number) {
+  return monitor('DESTROY_HIKE_TAG', new Promise((resolve, reject) => {
     const hikes_tags = table();
     const hikes = DbService.table('hikes');
     DbService.transaction('rw', hikes_tags, hikes, () => {
@@ -43,9 +44,9 @@ export function destroy(hike_id: number, tag_id: number) {
         }, reject);
       }, reject);
     });
-  });
+  }));
 }
 
-export function list(hike_id: number){
-  return table().where({hike_id: hike_id}).toArray();
+export function listHikeTags(hike_id: number){
+  return monitor('LIST_HIKE_TAGS', table().where({hike_id: hike_id}).toArray());
 }

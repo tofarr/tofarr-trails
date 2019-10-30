@@ -2,13 +2,9 @@ import React, { FC, FormEvent, useEffect, useState } from 'react';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
-import useErr from '../../../hooks/useErr';
-import useWorking from '../../../hooks/useWorking';
-import Loader from '../../../components/Loader';
-
 import ITag from '../ITag';
 import TagForm from '../components/TagForm';
-import { newInstance, create } from '../TagService';
+import { newTag, createTag } from '../TagService';
 
 export interface ITagFormProps {
   afterCreateTag?: (tag: ITag) => void;
@@ -17,42 +13,23 @@ export interface ITagFormProps {
 const CreateTag: FC<ITagFormProps> = ({ afterCreateTag }) => {
 
   const [tag, setTag] = useState<ITag | undefined>(undefined);
-  const { err } = useErr();
-  const {working, incrementWorking, decrementWorking } = useWorking();
 
   useEffect(() => {
-    incrementWorking();
-    newInstance().then((tag: ITag) => {
-      decrementWorking();
-      setTag(tag);
-    }, (e: any) => {
-      decrementWorking()
-      err(e);
-    });
-  }, [err, incrementWorking, decrementWorking]);
+    newTag().then(setTag);
+  }, []);
 
   function handleCreate(event: FormEvent){
     event.preventDefault();
     if(!tag){
       return;
     }
-    incrementWorking();
-    create(tag).then((tag: ITag) => {
-      decrementWorking();
-      incrementWorking();
-      newInstance().then((tag: ITag) => {
-        decrementWorking();
+    createTag(tag).then((tag: ITag) => {
+      newTag().then((tag: ITag) => {
         setTag(tag);
         if(afterCreateTag){
           afterCreateTag(tag);
         }
-      }, (e: any) => {
-        decrementWorking()
-        err(e);
-      });
-    }, (e: any) => {
-      decrementWorking()
-      err(e);
+      })
     });
   }
 
@@ -67,10 +44,10 @@ const CreateTag: FC<ITagFormProps> = ({ afterCreateTag }) => {
             <TagForm tag={tag} onUpdateTag={setTag} />
           </Grid>}
           <Grid item>
-            {working ? <Loader /> : <Button type="submit" color="primary" variant="contained">
+            <Button type="submit" color="primary" variant="contained">
               <AddIcon />
               Create Tag
-            </Button>}
+            </Button>
           </Grid>
         </Grid>
       </Box>

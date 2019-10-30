@@ -1,5 +1,4 @@
-import { MsgType } from './useMsg';
-import useMsg from './useMsg';
+import { addMsg, MsgType } from './MsgService';
 
 function getMsg(err: any): string {
   if(err.msg){
@@ -13,12 +12,6 @@ function getMsg(err: any): string {
   }
 };
 
-const { addMsg } = useMsg();
-const err = {
-  err: (err: any) => {
-    addMsg(getMsg(err), MsgType.Error);
-  }
-};
-export default function(){
-  return err;
-};
+export default function(err: any) {
+  addMsg(getMsg(err), MsgType.Error);
+}
