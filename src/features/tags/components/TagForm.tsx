@@ -12,7 +12,7 @@ export interface ITagFormProps {
 const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag }) => {
   return (
     <Grid container spacing={2} alignItems="center">
-      <Grid item xs>
+      <Grid item xs={12} sm>
         <TextField
           fullWidth
           variant="filled"

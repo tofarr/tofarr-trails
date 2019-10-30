@@ -39,9 +39,17 @@ const CreateTag: FC<ITagFormProps> = ({ afterCreateTag }) => {
     incrementWorking();
     create(tag).then((tag: ITag) => {
       decrementWorking();
-      if(afterCreateTag){
-        afterCreateTag(tag);
-      }
+      incrementWorking();
+      newInstance().then((tag: ITag) => {
+        decrementWorking();
+        setTag(tag);
+        if(afterCreateTag){
+          afterCreateTag(tag);
+        }
+      }, (e: any) => {
+        decrementWorking()
+        err(e);
+      });
     }, (e: any) => {
       decrementWorking()
       err(e);
@@ -52,10 +60,10 @@ const CreateTag: FC<ITagFormProps> = ({ afterCreateTag }) => {
     <form onSubmit={handleCreate}>
       <Box p={1}>
         <Box pb={1}>
-          <Typography variant="h5">Create Tag</Typography>
+          <Typography variant="h4">Create Tag</Typography>
         </Box>
         <Grid container spacing={2} alignItems="center">
-          {!!tag && <Grid item xs sm={8}>
+          {!!tag && <Grid item xs={12} sm={12} md>
             <TagForm tag={tag} onUpdateTag={setTag} />
           </Grid>}
           <Grid item>

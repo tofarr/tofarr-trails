@@ -15,12 +15,12 @@ export interface ITagListProps{
 const TagList: FC<ITagListProps> = ({ tags, onUpdateTag, onDeleteTag }) => {
   return <Fragment>
       <Box p={1}>
-        <Typography variant="h5">Tags</Typography>
+        <Typography variant="h4">Tags</Typography>
       </Box>
       {tags.map(tag =>
-        <Box key={tag.id} pl={1} pr={1} pb={1}>
+        <Box key={tag.id} pl={1} pr={1} pb={4}>
           <Grid container spacing={2} alignItems="center">
-            {!!tag && <Grid item xs sm={8}>
+            {!!tag && <Grid item xs={12} sm={12} md>
               <TagForm tag={tag} onUpdateTag={onUpdateTag} />
             </Grid>}
             {!!onDeleteTag && <Grid item>

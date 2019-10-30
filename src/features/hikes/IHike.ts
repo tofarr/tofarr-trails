@@ -1,9 +1,7 @@
 
-export default interface ITag {
+export default interface IHike {
   id?: number;
   title: string;
-  description?: string;
-  color: string;
   created_at?: number;
   updated_at?: number;
 }

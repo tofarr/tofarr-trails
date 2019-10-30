@@ -22,6 +22,7 @@ export function newInstance(): Promise<ITag>{
 }
 
 export function create(tag: ITag) {
+  tag.created_at = tag.updated_at = new Date().getTime();
   return new Promise<ITag>((resolve,reject) => {
     table().add(tag).then((id) => {
       resolve({ ...tag, id });
@@ -33,7 +34,34 @@ export function read(id: number) {
   return table().get(id);
 }
 
+export function readAll(ids: number[]){
+  return new Promise<ITag[]>((resolve, reject) => {
+    const tags: ITag[] = []
+    let toResolve = ids.length;
+
+    if(!toResolve){
+      resolve(tags);
+      return;
+    }
+
+    ids.forEach((id, index) => {
+      read(id).then((tag) => {
+        tags[index] = tag as ITag;
+        if(!--toResolve){
+          resolve(tags);
+        }
+      }, (e: any) => {
+        toResolve++;
+        reject(e);
+      })
+    })
+
+  })
+
+}
+
 export function update(tag: ITag) {
+  tag.updated_at = new Date().getTime();
   return table().update(tag.id, tag);
 }
 
