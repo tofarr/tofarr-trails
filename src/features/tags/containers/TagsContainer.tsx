@@ -10,7 +10,7 @@ import TagList from '../components/TagList';
 
 const TagsContainer: FC = () => {
 
-  const [tags, setTags] = useState<ITag[]>([]);
+  const [tags, setTags] = useState<ITag[]|undefined>(undefined);
 
   useEffect(() => {
     listTags().then(setTags);
@@ -18,7 +18,7 @@ const TagsContainer: FC = () => {
 
   function handleUpdateTag(tag: ITag){
     updateTag(tag).then(() => {
-      const newTags = tags.slice();
+      const newTags = (tags || []).slice();
       newTags[findIndex(tags, { id: tag.id })] = tag;
       setTags(newTags);
     });
@@ -26,7 +26,7 @@ const TagsContainer: FC = () => {
 
   function handleDeleteTag(tag: ITag){
     destroyTag(tag.id as number).then(() => {
-      const newTags = tags.slice();
+      const newTags = (tags || []).slice();
       newTags.splice(findIndex(tags, { id: tag.id }), 1);
       setTags(newTags);
       addMsg('Tag Deleted');

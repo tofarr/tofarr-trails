@@ -3,6 +3,7 @@ import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, MenuItem, MenuLi
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { isDark } from '../../../services/ColorService';
+import ListGrow from '../../../components/ListGrow';
 import ITag from '../../tags/ITag';
 
 export interface IHikeTagChipsProps {
@@ -18,7 +19,7 @@ const IHikeTagChips: FC<IHikeTagChipsProps> = ({ selectable, onSearch, selected,
   const [open, setOpen] = useState(false);
 
   function renderSelected(){
-    return selected.map(renderRemoveButton);
+    return <ListGrow items={selected} component={renderRemoveButton} />
   }
 
   function renderRemoveButton(tag: ITag){

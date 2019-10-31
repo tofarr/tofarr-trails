@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { IMsg, subscribeToMsgs, unsubscribeFromMsgs } from '../services/MsgService';
 
 interface IProps{
