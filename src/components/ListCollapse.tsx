@@ -46,11 +46,13 @@ class ListCollapse<T extends IIdentifiable> extends Component<IProps<T>, IState<
     });
   }
 
-  doInsertions(items:T[], wrappers:IWrapper<T>[]){
+  doInsertionsAndUpdates(items:T[], wrappers:IWrapper<T>[]){
     for(let i = 0; i < items.length; i++){
       const item = items[i];
-      const exists = wrappers.find((wrapper) => item.id === wrapper.item.id);
-      if(!exists){
+      const index = wrappers.findIndex((wrapper) => item.id === wrapper.item.id);
+      if(index >= 0){
+        wrappers[index].item = item;
+      }else{
         wrappers.splice(i, 0, {item: item, in: false, targetIn: true});
       }
     }
@@ -60,7 +62,7 @@ class ListCollapse<T extends IIdentifiable> extends Component<IProps<T>, IState<
     const { items } = newProps;
     const wrappers = this.state.wrappers.slice();
     this.doRemovals(items, wrappers);
-    this.doInsertions(items, wrappers);
+    this.doInsertionsAndUpdates(items, wrappers);
     this.setState({ wrappers: wrappers});
   }
 
