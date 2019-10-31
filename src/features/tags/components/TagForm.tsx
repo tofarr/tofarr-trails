@@ -9,7 +9,7 @@ export interface ITagFormProps {
   onUpdateTag: (tag: ITag) => void;
 }
 
-const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag }) => {
+const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag, children }) => {
   return (
     <Grid container spacing={2} alignItems="center">
       <Grid item xs={12} sm>
@@ -21,12 +21,17 @@ const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag }) => {
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             onUpdateTag({...tag, title: event.target.value})} />
       </Grid>
-      <Grid item>
+      <Grid item xs={12} sm="auto">
         <ColorPicker
           value={tag.color}
           onChange={(color: string) =>
             onUpdateTag({...tag, color})} />
       </Grid>
+      {!!children &&
+        <Grid item>
+          {children}
+        </Grid>
+      }
     </Grid>
   );
 }

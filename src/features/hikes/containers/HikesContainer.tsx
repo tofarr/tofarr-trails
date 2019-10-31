@@ -30,7 +30,11 @@ const HikesContainer: FC = () => {
   }
 
   function renderHike(hike:IHike){
-    return <UpdateHikeContainer hike={hike} afterDestroy={handleAfterDestroyHike} />;
+    return (
+      <Box pb={4}>
+        <UpdateHikeContainer hike={hike} afterDestroy={handleAfterDestroyHike} />
+      </Box>
+    );
   }
 
   return (

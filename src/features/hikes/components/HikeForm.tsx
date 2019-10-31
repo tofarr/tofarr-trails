@@ -36,13 +36,11 @@ const HikeForm: FC<IHikeFormProps> = ( { hike, onUpdateHike, selectableTags, onS
           onRemove={onRemoveTag}
           />
       </Grid>
-      <Grid item>
-        {!!children &&
-          <Grid item xs>
-            {children}
-          </Grid>
-        }
-      </Grid>
+      {!!children &&
+        <Grid item>
+          {children}
+        </Grid>
+      }
     </Grid>
   );
 }

@@ -39,17 +39,16 @@ const CreateTag: FC<ITagFormProps> = ({ afterCreateTag }) => {
         <Box pb={1}>
           <Typography variant="h4">Create Tag</Typography>
         </Box>
-        <Grid container spacing={2} alignItems="center">
-          {!!tag && <Grid item xs={12} sm={12} md>
-            <TagForm tag={tag} onUpdateTag={setTag} />
-          </Grid>}
-          <Grid item>
-            <Button type="submit" color="primary" variant="contained">
-              <AddIcon />
-              Create Tag
-            </Button>
-          </Grid>
-        </Grid>
+        {!!tag &&
+          <TagForm tag={tag} onUpdateTag={setTag}>
+            {!!tag &&
+              <Button type="submit" color="primary" variant="contained">
+                <AddIcon />
+                Create Tag
+              </Button>
+            }
+          </TagForm>
+        }
       </Box>
     </form>
   );

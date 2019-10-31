@@ -21,13 +21,14 @@ const TagList: FC<ITagListProps> = ({ tags, onUpdateTag, onDeleteTag }) => {
       <Box key={tag.id} pl={1} pr={1} pb={4}>
         <Grid container spacing={2} alignItems="center">
           {!!tag && <Grid item xs={12} sm={12} md>
-            <TagForm tag={tag} onUpdateTag={onUpdateTag} />
-          </Grid>}
-          {!!onDeleteTag && <Grid item>
-            <Button color="secondary" variant="contained" onClick={() => onDeleteTag(tag)}>
-              <DeleteIcon />
-              Delete Tag
-            </Button>
+            <TagForm tag={tag} onUpdateTag={onUpdateTag}>
+              {!!onDeleteTag &&
+                <Button color="secondary" variant="contained" onClick={() => onDeleteTag(tag)}>
+                  <DeleteIcon />
+                  Delete Tag
+                </Button>
+              }
+            </TagForm>
           </Grid>}
         </Grid>
       </Box>
