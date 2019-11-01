@@ -52,6 +52,15 @@ const CreateHike: FC<IHikeFormProps> = ({ afterCreateHike }) => {
     setSelectedTags(selectedTags.filter(tag => tag.id !== tagToRemove.id));
   }
 
+  function renderActionComponent(){
+    return (
+      <Button type="submit" fullWidth variant="contained" color="primary">
+        <AddIcon />
+        Create Hike
+      </Button>
+    )
+  }
+
   return (
     <form onSubmit={handleCreateHike}>
       <Box p={1}>
@@ -65,12 +74,8 @@ const CreateHike: FC<IHikeFormProps> = ({ afterCreateHike }) => {
           onSearchTags={handleSearch}
           selectedTags={selectedTags}
           onAddTag={handleAddHikeTag}
-          onRemoveTag={handleRemoveHikeTag}>
-          <Button type="submit" fullWidth variant="contained" color="primary">
-            <AddIcon />
-            Create Hike
-          </Button>
-        </HikeForm>}
+          onRemoveTag={handleRemoveHikeTag}
+          actionComponent={renderActionComponent()} />}
       </Box>
     </form>
   );

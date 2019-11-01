@@ -22,6 +22,7 @@ export function newHike(): Promise<IHike>{
 
 export function createHike(hike: IHike) {
   return monitor('CREATE_HIKE', new Promise<IHike>((resolve,reject) => {
+    hike.created_at = hike.updated_at = new Date().getTime();
     table().add(hike).then(id => resolve({ ...hike, id }), reject);
   }));
 }
@@ -40,9 +41,11 @@ export function destroyHike(id: number) {
   return monitor('DESTROY_HIKE', new Promise((resolve,reject) => {
     const hikes = table();
     const hikes_tags = DbService.table('hikes_tags');
-    DbService.transaction('rw', hikes, hikes_tags, () => {
+    const points = DbService.table('points');
+    DbService.transaction('rw', hikes, hikes_tags, points, () => {
       hikes.delete(id);
       hikes_tags.where({hike_id: id}).delete();
+      points.where({hike_id: id}).delete();
     }).then(resolve).catch(reject);
   }));
 }

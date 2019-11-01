@@ -1,5 +1,4 @@
 import React, { FC, Fragment, useEffect, useState } from 'react';
-import { findIndex } from 'lodash';
 
 import { addMsg } from '../../../services/MsgService';
 
@@ -18,17 +17,13 @@ const TagsContainer: FC = () => {
 
   function handleUpdateTag(tag: ITag){
     updateTag(tag).then(() => {
-      const newTags = (tags || []).slice();
-      newTags[findIndex(tags, { id: tag.id })] = tag;
-      setTags(newTags);
+      setTags((tags || []).map((t => t.id === tag.id ? tag : t)));
     });
   }
 
   function handleDeleteTag(tag: ITag){
     destroyTag(tag.id as number).then(() => {
-      const newTags = (tags || []).slice();
-      newTags.splice(findIndex(tags, { id: tag.id }), 1);
-      setTags(newTags);
+      setTags((tags || []).filter((t => t.id !== tag.id)));
       addMsg('Tag Deleted');
     });
   }

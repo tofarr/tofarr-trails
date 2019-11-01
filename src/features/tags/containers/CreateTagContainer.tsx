@@ -23,11 +23,11 @@ const CreateTag: FC<ITagFormProps> = ({ afterCreateTag }) => {
     if(!tag){
       return;
     }
-    createTag(tag).then((tag: ITag) => {
+    createTag(tag).then((createdTag: ITag) => {
       newTag().then((tag: ITag) => {
         setTag(tag);
         if(afterCreateTag){
-          afterCreateTag(tag);
+          afterCreateTag(createdTag);
         }
       })
     });

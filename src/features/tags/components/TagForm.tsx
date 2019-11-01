@@ -1,9 +1,8 @@
 import React, { ChangeEvent, FC, useState } from 'react';
-import { Box, Button, Collapse, Grid, TextField } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import { Box, Collapse, Grid, TextField } from '@material-ui/core';
 
 import ColorPicker from '../../../components/ColorPicker';
+import MoreToggle from '../../../components/MoreToggle';
 import Timestamp from '../../../components/Timestamp';
 
 import ITag from '../ITag';
@@ -15,7 +14,7 @@ export interface ITagFormProps {
 
 const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag, children }) => {
 
-  const [advanced,setAdvanced] = useState(false);
+  const [more,setMore] = useState(false);
 
   return (
     <Grid container spacing={2}>
@@ -37,21 +36,18 @@ const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag, children }) => {
                 onUpdateTag({...tag, color})} />
           </Grid>
           <Grid item>
-            <Button variant="contained" onClick={()=> setAdvanced(!advanced)}>
-              {advanced ? "Less..." : "More..."}
-              {advanced ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
-            </Button>
+            <MoreToggle more={more} setMore={setMore} />
           </Grid>
         </Grid>
         <Grid item>
-          <Collapse in={advanced}>
+          <Collapse in={more}>
             <Box pt={2}>
               {!!tag.id &&
                 <Grid container>
-                  <Grid xs item>
+                  <Grid item xs={12} sm>
                     <Timestamp label="Created At" value={tag.created_at} />
                   </Grid>
-                  <Grid xs item>
+                  <Grid item xs={12} sm>
                     <Timestamp label="Updated At" value={tag.updated_at} />
                   </Grid>
                 </Grid>

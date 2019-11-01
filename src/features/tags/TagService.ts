@@ -1,5 +1,6 @@
 import DbService from '../../services/DbService';
 import { randomColor } from '../../services/ColorService';
+import { monitor } from '../../services/TaskService';
 
 import ITag from './ITag';
 
@@ -48,7 +49,14 @@ export function updateTag(tag: ITag) {
 }
 
 export function destroyTag(id: number) {
-  return table().delete(id);
+  return monitor('DESTROY_HIKE', new Promise((resolve,reject) => {
+    const tags = table();
+    const hikes_tags = DbService.table('hikes_tags');
+    DbService.transaction('rw', tags, hikes_tags, () => {
+      tags.delete(id);
+      hikes_tags.where({tag_id: id}).delete();
+    }).then(resolve).catch(reject);
+  }));
 }
 
 export function listTags() {
