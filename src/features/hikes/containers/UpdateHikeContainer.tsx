@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -15,7 +15,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Timestamp from '../../../components/Timestamp';
 
 import IHike from '../IHike';
-import { updateHike, destroyHike } from '../HikeService';
+import { destroyHike, updateHike, readHike } from '../HikeService';
 import HikeForm from '../components/HikeForm';
 import IHikeTag from '../../hikeTags/IHikeTag';
 import { listTags, readAllTags } from '../../tags/TagService';
@@ -28,12 +28,12 @@ import PointGraphContainer from '../../points/containers/PointGraphContainer';
 export interface IHikeContainerProps{
   hike: IHike;
   afterDestroy?: (hike:IHike) => void;
+  afterUpdate?: (hike:IHike) => void;
 }
 
-const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
+const UpdateHikeContainer: FC<IHikeContainerProps> = ({ hike, afterUpdate, afterDestroy }) => {
 
-  const hikeId = props.hike.id as number;
-  const [hike, setHike] = useState<IHike>(props.hike);
+  const hikeId = hike.id as number;
   const [selectableTags,setSelectableTags] = useState<ITag[]|undefined>(undefined);
   const [selectedTags,setSelectedTags] = useState<ITag[]|undefined>(undefined);
   const [recordId,setRecordId] = useState<number|undefined>(undefined);
@@ -49,12 +49,15 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
   }
 
   function handleUpdate(_hike: IHike){
-    updateHike(_hike).then(setHike);
+    updateHike(_hike).then(()=>{
+      if(afterUpdate){
+        afterUpdate(hike);
+      }
+    });
   }
 
   function handleDestroy(){
     destroyHike(hike.id as number).then(()=>{
-      const { afterDestroy } = props;
       if(afterDestroy){
         afterDestroy(hike);
       }
@@ -97,6 +100,14 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
     })
   }
 
+  function handleUpdated(hike_id:number){
+    if(afterUpdate){
+      readHike(hike_id).then((hike) => {
+        (afterUpdate as (hike:IHike) => void)(hike);
+      })
+    }
+  }
+
   function renderActionComponent(){
     return (
       <Button color="secondary" variant="contained" onClick={() => handleDestroy()}>
@@ -136,7 +147,9 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
             <ExpansionPanelDetails>
               <Grid container direction="column">
                 <Grid item xs>
-                  <PointsContainer hike_id={hike.id as number} />
+                  <PointsContainer
+                    hike_id={hike.id as number}
+                    afterUpdated={(hike_id:number) => handleUpdated(hike_id)} />
                 </Grid>
               </Grid>
             </ExpansionPanelDetails>

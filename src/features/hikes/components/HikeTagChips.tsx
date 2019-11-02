@@ -27,7 +27,10 @@ const IHikeTagChips: FC<IHikeTagChipsProps> = ({ selectable, onSearch, selected,
       <Button
         variant="contained"
         style={{backgroundColor: tag.color, color: isDark(tag.color) ? 'white' : 'black'}}
-        onClick={() => onRemove(tag)}>
+        onClick={(event:MouseEvent) => {
+          event.stopPropagation();
+          onRemove(tag);
+        }}>
         {tag.title}
         <DeleteIcon />
       </Button>

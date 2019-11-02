@@ -29,10 +29,18 @@ const HikesContainer: FC = () => {
     addMsg('Hike Deleted');
   }
 
+  function handleAfterUpdateHike(updatedHike: IHike){
+    setHikes((hikes || []).map(hike => (hike.id === updatedHike.id) ? updatedHike : hike ));
+  }
+
   function renderHike(hike:IHike){
+    console.log('renderHike', hike.id, new Date(hike.updated_at as any));
     return (
       <Box pb={4}>
-        <UpdateHikeContainer hike={hike} afterDestroy={handleAfterDestroyHike} />
+        <UpdateHikeContainer
+          hike={hike}
+          afterDestroy={handleAfterDestroyHike}
+          afterUpdate={handleAfterUpdateHike} />
       </Box>
     );
   }

@@ -28,7 +28,15 @@ export function createHike(hike: IHike) {
 }
 
 export function readHike(id: number) {
-  return table().get(id);
+  return new Promise<IHike>((resolve, reject) => {
+    table().get(id).then((hike) => {
+      if(hike){
+        resolve(hike);
+      }else{
+        reject('Unknown hike: '+hike);
+      }
+    }, reject);
+  });
 }
 
 export function updateHike(hike: IHike) {

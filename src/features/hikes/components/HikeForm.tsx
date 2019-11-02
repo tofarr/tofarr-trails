@@ -21,7 +21,7 @@ export interface IHikeFormProps {
 }
 
 const HikeForm: FC<IHikeFormProps> = ( { hike, initialExpanded, onUpdateHike, selectableTags, onSearchTags, selectedTags, onAddTag, onRemoveTag, moreComponent, actionComponent }) => {
-
+  console.log('HikeForm', hike.id, new Date(hike.updated_at as any));
   const [expanded, setExpanded] = useState(initialExpanded || false);
 
   return (
