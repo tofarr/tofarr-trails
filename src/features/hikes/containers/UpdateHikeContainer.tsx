@@ -31,8 +31,9 @@ export interface IHikeContainerProps{
   afterUpdate?: (hike:IHike) => void;
 }
 
-const UpdateHikeContainer: FC<IHikeContainerProps> = ({ hike, afterUpdate, afterDestroy }) => {
-
+const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
+  const { afterUpdate, afterDestroy } = props
+  const [hike, setHike] = useState<IHike>(props.hike);
   const hikeId = hike.id as number;
   const [selectableTags,setSelectableTags] = useState<ITag[]|undefined>(undefined);
   const [selectedTags,setSelectedTags] = useState<ITag[]|undefined>(undefined);
@@ -49,7 +50,9 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = ({ hike, afterUpdate, after
   }
 
   function handleUpdate(_hike: IHike){
+    debugger;
     updateHike(_hike).then(()=>{
+      setHike(_hike);
       if(afterUpdate){
         afterUpdate(hike);
       }
@@ -69,6 +72,7 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = ({ hike, afterUpdate, after
       let newTags = (selectedTags || []).slice();
       newTags.push(tag);
       setSelectedTags(newTags);
+      readHike(hike.id as number).then(setHike);
     });
   }
 
@@ -76,6 +80,7 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = ({ hike, afterUpdate, after
     destroyHikeTag(hike.id as number, tag.id as number).then(() => {
       if(selectedTags){
         setSelectedTags(selectedTags.filter((selectedTag) => selectedTag.id !== tag.id));
+        readHike(hike.id as number).then(setHike);
       }
     });
   }
