@@ -50,7 +50,6 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
   }
 
   function handleUpdate(_hike: IHike){
-    debugger;
     updateHike(_hike).then(()=>{
       setHike(_hike);
       if(afterUpdate){
@@ -60,6 +59,10 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
   }
 
   function handleDestroy(){
+    if(recordId){
+      navigator.geolocation.clearWatch(recordId);
+      setRecordId(undefined);
+    }
     destroyHike(hike.id as number).then(()=>{
       if(afterDestroy){
         afterDestroy(hike);

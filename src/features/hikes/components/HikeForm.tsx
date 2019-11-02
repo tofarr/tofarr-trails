@@ -28,8 +28,7 @@ const HikeForm: FC<IHikeFormProps> = ( { hike, initialExpanded, onUpdateHike, se
     <Box mt={expanded?1:0} mb={expanded?1:0}>
       <ExpansionPanel
         expanded={expanded}
-        onChange={() => setExpanded(!expanded)}
-        TransitionProps={{ unmountOnExit: true }}>
+        onChange={() => setExpanded(!expanded)}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Grid container alignItems="center" spacing={2}>
             <Grid item xs={12} sm>
