@@ -39,13 +39,11 @@ const HikesContainer: FC = () => {
 
   return (
     <Fragment>
-      <CreateHikeContainer afterCreateHike={handleAfterCreateHike} />
-      <Box p={1}>
+      <Box pt={1} pb={1}>
         <Typography variant="h4">Hikes</Typography>
       </Box>
-      <Box pl={1} pr={1} pb={4}>
-        {!!hikes && <ListCollapse items={hikes} component={renderHike} />}
-      </Box>
+      <CreateHikeContainer afterCreateHike={handleAfterCreateHike} />
+      {!!hikes && <ListCollapse items={hikes} component={renderHike} />}
     </Fragment>
   );
 }

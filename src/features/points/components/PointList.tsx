@@ -14,29 +14,22 @@ interface IProps{
 }
 
 const PointList: FC<IProps> = ({ points, onUpdatePoint, onDeletePoint }) => {
-  return points ?
-    <Fragment>
-      <Box pt={1} pb={1}>
-        <Typography variant="h4">Points</Typography>
-      </Box>
-      <Box>
-        <ListCollapse
-          items={points}
-          component={point =>
-            <PointForm
-              point={point}
-              onUpdatePoint={onUpdatePoint}
-              actionComponent={
-                (point:IPoint) => (
-                  <Button color="secondary" variant="contained" onClick={() => onDeletePoint(point)}>
-                    <DeleteIcon />
-                    Delete Point
-                  </Button>
-                )
-              } />
+  return points ?    
+    <ListCollapse
+      items={points}
+      component={point =>
+        <PointForm
+          point={point}
+          onUpdatePoint={onUpdatePoint}
+          actionComponent={
+            (point:IPoint) => (
+              <Button color="secondary" variant="contained" onClick={() => onDeletePoint(point)}>
+                <DeleteIcon />
+                Delete Point
+              </Button>
+            )
           } />
-      </Box>
-    </Fragment> : null;
+      } /> : null;
 };
 
 export default PointList;

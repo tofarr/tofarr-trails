@@ -1,4 +1,5 @@
 import React, { FC, Fragment, useEffect, useState } from 'react';
+import { Box, Typography } from '@material-ui/core';
 
 import { addMsg } from '../../../services/MsgService';
 
@@ -33,10 +34,13 @@ const TagsContainer: FC = () => {
     addMsg('Tag Created');
   }
 
-  return <Fragment>
+  return <Box>
+    <Box pb={1} pt={1}>
+      <Typography variant="h4">Tags</Typography>
+    </Box>
     <CreateTagContainer afterCreateTag={handleAfterCreateTag} />
     <TagList tags={tags} onUpdateTag={handleUpdateTag} onDeleteTag={handleDeleteTag} />
-  </Fragment>
+  </Box>
 }
 
 export default TagsContainer;

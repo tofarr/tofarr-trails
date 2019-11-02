@@ -54,7 +54,7 @@ const CreateHike: FC<IHikeFormProps> = ({ afterCreateHike }) => {
 
   function renderActionComponent(){
     return (
-      <Button type="submit" fullWidth variant="contained" color="primary">
+      <Button type="submit" variant="contained" color="primary">
         <AddIcon />
         Create Hike
       </Button>
@@ -63,20 +63,16 @@ const CreateHike: FC<IHikeFormProps> = ({ afterCreateHike }) => {
 
   return (
     <form onSubmit={handleCreateHike}>
-      <Box p={1}>
-        <Box pb={1}>
-          <Typography variant="h4">Create Hike</Typography>
-        </Box>
-        {!!hike && <HikeForm
-          hike={hike}
-          onUpdateHike={setHike}
-          selectableTags={selectableTags}
-          onSearchTags={handleSearch}
-          selectedTags={selectedTags}
-          onAddTag={handleAddHikeTag}
-          onRemoveTag={handleRemoveHikeTag}
-          actionComponent={renderActionComponent()} />}
-      </Box>
+      {!!hike && <HikeForm
+        hike={hike}
+        initialExpanded={true}
+        onUpdateHike={setHike}
+        selectableTags={selectableTags}
+        onSearchTags={handleSearch}
+        selectedTags={selectedTags}
+        onAddTag={handleAddHikeTag}
+        onRemoveTag={handleRemoveHikeTag}
+        actionComponent={renderActionComponent()} />}
     </form>
   );
 }

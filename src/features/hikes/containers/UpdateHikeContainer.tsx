@@ -1,8 +1,17 @@
 import React, { FC, Fragment, useEffect, useState } from 'react';
-import { Button, Checkbox, Collapse, Grid } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Add';
+import {
+  Box,
+  Button,
+  Checkbox,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  Grid,
+  Typography
+} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import MoreToggle from '../../../components/MoreToggle';
 import Timestamp from '../../../components/Timestamp';
 
 import IHike from '../IHike';
@@ -27,8 +36,6 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
   const [hike, setHike] = useState<IHike>(props.hike);
   const [selectableTags,setSelectableTags] = useState<ITag[]|undefined>(undefined);
   const [selectedTags,setSelectedTags] = useState<ITag[]|undefined>(undefined);
-  const [pointsMore,setPointsMore] = useState(false);
-  const [graphMore,setGraphMore] = useState(false);
   const [recordId,setRecordId] = useState<number|undefined>(undefined);
 
   useEffect(() => {
@@ -92,7 +99,7 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
 
   function renderActionComponent(){
     return (
-      <Button fullWidth color="secondary" variant="contained" onClick={() => handleDestroy()}>
+      <Button color="secondary" variant="contained" onClick={() => handleDestroy()}>
         <DeleteIcon />
         Delete Hike
       </Button>
@@ -101,48 +108,52 @@ const UpdateHikeContainer: FC<IHikeContainerProps> = (props) => {
 
   function renderMoreComponent(){
     return (
-      <Fragment>
-        <Grid container>
-          <Grid item xs={12} sm>
-            <Timestamp label="Created At" value={hike.created_at} />
-          </Grid>
-          <Grid item xs={12} sm>
-            <Timestamp label="Updated At" value={hike.updated_at} />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color={recordId ? "secondary" : "default"}
-              onClick={handleRecording}>
-              <Checkbox checked={!!recordId} />
-              Record
-            </Button>
+      <Grid container>
+        <Grid item xs={12}>
+          <Grid container>
+            <Grid item xs={12} sm>
+              <Timestamp label="Created At" value={hike.created_at} />
+            </Grid>
+            <Grid item xs={12} sm>
+              <Timestamp label="Updated At" value={hike.updated_at} />
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color={recordId ? "secondary" : "default"}
+                onClick={handleRecording}>
+                <Checkbox checked={!!recordId} />
+                Record
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
-
-        <MoreToggle
-          more={pointsMore}
-          setMore={setPointsMore}
-          moreLabel="Show Points"
-          lessLabel="Hide Points" />
-
-        <Collapse in={pointsMore} mountOnEnter={true}>
-          <PointsContainer hike_id={hike.id as number} />
-        </Collapse>
-
-
-        <MoreToggle
-          more={graphMore}
-          setMore={setGraphMore}
-          moreLabel="Show Graph"
-          lessLabel="Hide Graph" />
-
-        <Collapse in={graphMore}>
-          <PointGraphContainer hike_id={hike.id as number} />
-        </Collapse>
-
-      </Fragment>
-    )
+        <Grid item xs={12}>
+          <ExpansionPanel TransitionProps={{ unmountOnExit: true }}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h6">Points</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Grid container direction="column">
+                <Grid item xs>
+                  <PointsContainer hike_id={hike.id as number} />
+                </Grid>
+              </Grid>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          <ExpansionPanel TransitionProps={{ unmountOnExit: true }}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h6">Graph</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Box>
+                <PointGraphContainer hike_id={hike.id as number} />
+              </Box>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </Grid>
+      </Grid>
+    );
   }
 
   return (

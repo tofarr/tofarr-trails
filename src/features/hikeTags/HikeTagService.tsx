@@ -4,7 +4,7 @@ import { monitor } from '../../services/TaskService';
 import IHikeTag from './IHikeTag';
 
 DbService.version(1).stores({
-  hikes_tags: '++id,hike_id,&[hike_id+tag_id]'
+  hikes_tags: '++id,hike_id,tag_id,&[hike_id+tag_id]'
 })
 
 function table(){

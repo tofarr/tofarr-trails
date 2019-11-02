@@ -1,5 +1,5 @@
-import React, { FC, useState } from 'react';
-import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, MenuItem, MenuList, Paper, Typography } from '@material-ui/core';
+import React, { FC, MouseEvent, useState } from 'react';
+import { Button, Dialog, DialogContent, DialogTitle, Grid, MenuItem, MenuList, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { isDark } from '../../../services/ColorService';
@@ -49,7 +49,10 @@ const IHikeTagChips: FC<IHikeTagChipsProps> = ({ selectable, onSearch, selected,
 
   function renderSelectable(tag: ITag){
     return (
-      <MenuItem key={tag.id} onClick={() => onAdd(tag)}>
+      <MenuItem key={tag.id} onClick={(event:MouseEvent) => {
+        event.stopPropagation();
+        onAdd(tag)
+      }}>
         {tag.title}
       </MenuItem>
     )
@@ -85,7 +88,8 @@ const IHikeTagChips: FC<IHikeTagChipsProps> = ({ selectable, onSearch, selected,
     );
   }
 
-  function handleOpen(){
+  function handleOpen(event:MouseEvent){
+    event.stopPropagation();
     setOpen(true);
     if(!selectable){
       onSearch(undefined);
@@ -93,15 +97,11 @@ const IHikeTagChips: FC<IHikeTagChipsProps> = ({ selectable, onSearch, selected,
   }
 
   return (
-    <Paper>
-      <Box p={1}>
-        <Grid container spacing={2}>
-          {renderSelected()}
-          {renderAddButton()}
-          {renderDialog()}
-        </Grid>
-      </Box>
-    </Paper>
+    <Grid container alignItems="center" spacing={2}>
+      {renderSelected()}
+      {renderAddButton()}
+      {renderDialog()}
+    </Grid>
   );
 }
 

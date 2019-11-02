@@ -35,21 +35,18 @@ const CreateTag: FC<ITagFormProps> = ({ afterCreateTag }) => {
 
   return (
     <form onSubmit={handleCreate}>
-      <Box p={1}>
-        <Box pb={1}>
-          <Typography variant="h4">Create Tag</Typography>
-        </Box>
-        {!!tag &&
-          <TagForm tag={tag} onUpdateTag={setTag}>
-            {!!tag &&
-              <Button type="submit" color="primary" variant="contained">
-                <AddIcon />
-                Create Tag
-              </Button>
-            }
-          </TagForm>
-        }
-      </Box>
+      {!!tag &&
+        <TagForm
+          initialExpanded={true}
+          tag={tag}
+          onUpdateTag={setTag}
+          actionComponent={
+            <Button type="submit" color="primary" variant="contained">
+              <AddIcon />
+              Create Tag
+            </Button>
+          } />
+      }
     </form>
   );
 }

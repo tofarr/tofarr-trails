@@ -1,8 +1,11 @@
-import React, { ChangeEvent, FC, useState } from 'react';
-import { Box, Collapse, Grid, TextField } from '@material-ui/core';
+import React, { ChangeEvent, FC, Fragment, ReactNode,
+   SyntheticEvent, useState } from 'react';
+import { Box, ExpansionPanel, ExpansionPanelActions,
+   ExpansionPanelDetails, ExpansionPanelSummary,
+   Grid, TextField } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import ColorPicker from '../../../components/ColorPicker';
-import MoreToggle from '../../../components/MoreToggle';
 import Timestamp from '../../../components/Timestamp';
 
 import ITag from '../ITag';
@@ -10,48 +13,59 @@ import ITag from '../ITag';
 export interface ITagFormProps {
   tag: ITag;
   onUpdateTag: (tag: ITag) => void;
+  initialExpanded?: boolean;
+  actionComponent: ReactNode;
 }
 
-const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag, children }) => {
+const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag, initialExpanded, actionComponent }) => {
 
-  const [more,setMore] = useState(false);
+  const [expanded, setExpanded] = useState(initialExpanded || false);
+
+  function handleFocus(event:SyntheticEvent){
+    event.stopPropagation();
+    setExpanded(true);
+  }
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} md>
-        <Grid container spacing={2} justify="space-between">
-          <Grid item xs={12} sm>
-            <TextField
-              fullWidth
-              variant="filled"
-              label="Title"
-              value={tag.title}
-              onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                onUpdateTag({...tag, title: event.target.value})} />
+    <Box mt={expanded?1:0} mb={expanded?1:0}>
+      <ExpansionPanel
+        expanded={expanded}
+        onChange={() => setExpanded(!expanded)}
+        TransitionProps={{ unmountOnExit: true }}>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs>
+              <TextField
+                fullWidth
+                variant="filled"
+                label="Title"
+                value={tag.title}
+                onClick={handleFocus}
+                onFocus={handleFocus}
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  onUpdateTag({...tag, title: event.target.value})} />
+            </Grid>
+            <Grid item>
+              <ColorPicker
+                value={tag.color}
+                onChange={(color: string) =>
+                  onUpdateTag({...tag, color})} />
+            </Grid>
           </Grid>
-          <Grid item>
-            <ColorPicker
-              value={tag.color}
-              onChange={(color: string) =>
-                onUpdateTag({...tag, color})} />
-          </Grid>
-          <Grid item>
-            <MoreToggle more={more} setMore={setMore} />
-          </Grid>
-        </Grid>
-        <Grid item>
-          <Collapse in={more}>
-            <Box pt={2}>
-              {!!tag.id &&
-                <Grid container>
-                  <Grid item xs={12} sm>
-                    <Timestamp label="Created At" value={tag.created_at} />
-                  </Grid>
-                  <Grid item xs={12} sm>
-                    <Timestamp label="Updated At" value={tag.updated_at} />
-                  </Grid>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Grid container spacing={2}>
+            {!!tag.id &&
+              <Fragment>
+                <Grid item xs={12} sm={6}>
+                  <Timestamp label="Created At" value={tag.created_at} />
                 </Grid>
-              }
+                <Grid item xs={12} sm={6}>
+                  <Timestamp label="Updated At" value={tag.updated_at} />
+                </Grid>
+              </Fragment>
+            }
+            <Grid item xs>
               <TextField
                 fullWidth
                 multiline
@@ -60,16 +74,14 @@ const TagForm: FC<ITagFormProps> = ( { tag, onUpdateTag, children }) => {
                 value={tag.description}
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
                   onUpdateTag({...tag, description: event.target.value})} />
-            </Box>
-          </Collapse>
-        </Grid>
-      </Grid>
-      {!!children &&
-        <Grid item xs={12} sm="auto">
-          {children}
-        </Grid>
-      }
-    </Grid>
+            </Grid>
+          </Grid>
+        </ExpansionPanelDetails>
+        {!!actionComponent && <ExpansionPanelActions>
+          {actionComponent}
+        </ExpansionPanelActions>}
+      </ExpansionPanel>
+    </Box>
   );
 }
 

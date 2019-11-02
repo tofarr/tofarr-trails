@@ -36,9 +36,6 @@ const CreateTag: FC<IPointFormProps> = ({ hike_id, afterCreatePoint }) => {
 
   return (
     <form onSubmit={handleCreate}>
-      <Box pb={1}>
-        <Typography variant="h4">Create Point</Typography>
-      </Box>
       {!!point &&
         <PointForm
           point={point}

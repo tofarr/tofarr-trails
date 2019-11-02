@@ -1,7 +1,7 @@
-import React, { ChangeEvent, FC, Fragment, ReactNode, useState } from 'react';
-import { Box, Collapse, Grid, TextField } from '@material-ui/core';
-
-import MoreToggle from '../../../components/MoreToggle';
+import React, { ChangeEvent, FC, MouseEvent, ReactNode, useState } from 'react';
+import { Box, ExpansionPanel, ExpansionPanelActions,
+   ExpansionPanelDetails, ExpansionPanelSummary, Grid, TextField } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import HikeTagChips from './HikeTagChips';
 import IHike from '../IHike';
@@ -9,6 +9,7 @@ import ITag from '../../tags/ITag';
 
 export interface IHikeFormProps {
   hike: IHike;
+  initialExpanded?: boolean;
   onUpdateHike: (hike: IHike) => void;
   selectableTags?: ITag[];
   onSearchTags: (query: string | undefined) => void,
@@ -19,25 +20,29 @@ export interface IHikeFormProps {
   actionComponent: ReactNode;
 }
 
-const HikeForm: FC<IHikeFormProps> = ( { hike, onUpdateHike, selectableTags, onSearchTags, selectedTags, onAddTag, onRemoveTag, moreComponent, actionComponent }) => {
+const HikeForm: FC<IHikeFormProps> = ( { hike, initialExpanded, onUpdateHike, selectableTags, onSearchTags, selectedTags, onAddTag, onRemoveTag, moreComponent, actionComponent }) => {
 
-  const [more,setMore] = useState(false);
+  const [expanded, setExpanded] = useState(initialExpanded || false);
 
   return (
-    <Fragment>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={12} md>
-        <Grid container spacing={2}>
-            <Grid item xs={12} sm={12} md>
+    <Box mt={expanded?1:0} mb={expanded?1:0}>
+      <ExpansionPanel
+        expanded={expanded}
+        onChange={() => setExpanded(!expanded)}
+        TransitionProps={{ unmountOnExit: true }}>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Grid container alignItems="center" spacing={2}>
+            <Grid item xs={12} sm>
               <TextField
                 fullWidth
                 variant="filled"
                 label="Title"
                 value={hike.title}
+                onClick={(event:MouseEvent) => event.stopPropagation()}
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
                   onUpdateHike({...hike, title: event.target.value})} />
             </Grid>
-            <Grid item xs={12} sm={12} md>
+            <Grid item xs={12} sm="auto">
               <HikeTagChips
                 selectable={selectableTags}
                 onSearch={onSearchTags}
@@ -46,25 +51,19 @@ const HikeForm: FC<IHikeFormProps> = ( { hike, onUpdateHike, selectableTags, onS
                 onRemove={onRemoveTag}
                 />
             </Grid>
-            {!!moreComponent &&
-              <Grid item>
-                <MoreToggle more={more} setMore={setMore} />
-              </Grid>
-            }
           </Grid>
-        </Grid>
-        <Grid item>
-          {actionComponent}
-        </Grid>
-      </Grid>
-      {!!moreComponent &&
-        <Collapse in={more}>
-          <Box pt={2}>
-            {moreComponent()}
-          </Box>
-        </Collapse>
-      }
-    </Fragment>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          {!!moreComponent && moreComponent()}
+        </ExpansionPanelDetails>
+        {actionComponent &&
+          <ExpansionPanelActions>
+            {actionComponent}
+          </ExpansionPanelActions>
+        }
+      </ExpansionPanel>
+
+    </Box>
   );
 }
 

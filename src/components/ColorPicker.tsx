@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, Fragment, MouseEvent, useState } from 'react';
+import React, { ChangeEvent, FC, FocusEvent, Fragment, MouseEvent, useState } from 'react';
 import { Button } from '@material-ui/core';
 import { uniqueId } from 'lodash';
 import PaletteIcon from '@material-ui/icons/Palette';
@@ -37,8 +37,12 @@ const ColorPicker: FC<IColorPickerProps> = ({ className, name, value, variant, o
         name={name}
         variant={variant}
         style={{backgroundColor: value, color: textColor}}
-        onClick={(event: MouseEvent) =>{
+        onClick={(event: MouseEvent) => {
+          event.stopPropagation();
           (document.querySelector('#'+pickerId) as HTMLInputElement).click();
+        }}
+        onFocus={(event: FocusEvent) => {
+          event.stopPropagation();
         }}>
           <PaletteIcon />
       </Button>
